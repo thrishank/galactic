@@ -55,28 +55,20 @@ client.on("interactionCreate", async (interaction: Interaction) => {
     switch (commandName) {
       case "login":
         if (!wallet) {
-          try {
-            const { id, address } = await privy.walletApi.create({
-              chainType: "solana",
-            });
-            await prisma.user.create({
-              data: {
-                discordId,
-                privyId: id,
-                solAddress: address,
-              },
-            });
-            await interaction.reply({
-              content: `Wallet created successfully: ${address}`,
-              ephemeral: true,
-            });
-          } catch (error: any) {
-            console.error("Error creating wallet:", error);
-            await interaction.reply({
-              content: `Error creating wallet: ${error.message}`,
-              ephemeral: true,
-            });
-          }
+          const { id, address } = await privy.walletApi.create({
+            chainType: "solana",
+          });
+          await prisma.user.create({
+            data: {
+              discordId,
+              privyId: id,
+              solAddress: address,
+            },
+          });
+          await interaction.reply({
+            content: `Wallet created successfully: ${address}`,
+            ephemeral: true,
+          });
           break;
         } else {
           const addr = wallet.solAddress;
@@ -86,6 +78,7 @@ client.on("interactionCreate", async (interaction: Interaction) => {
           });
           break;
         }
+
       case "wallet":
         await interaction.deferReply();
 
@@ -113,6 +106,7 @@ client.on("interactionCreate", async (interaction: Interaction) => {
 
       case "transfer":
         await interaction.deferReply();
+
         if (!wallet) {
           return interaction.reply({
             content: "Please log in first using `/login`.",
@@ -130,17 +124,21 @@ client.on("interactionCreate", async (interaction: Interaction) => {
 
         const signature = await privysign(wallet.privyId, transaction);
         const url = `https://solscan.io/tx/${signature}`;
+
         await interaction.editReply({
           content: url,
         });
         break;
+
       case "swap":
+        await interaction.deferReply();
+
         if (!wallet) {
           return interaction.reply({
             content: "Please log in first using `/login`.",
           });
         }
-        await interaction.deferReply();
+
         const input_mint = options.data[0].value;
         const output_mint = options.data[1].value;
         const quantity = options.data[2].value;

@@ -26,30 +26,6 @@ export const commands = [
     ],
   },
   {
-    name: "transfer_tokens",
-    description: "Transfer tokens.",
-    options: [
-      {
-        name: "token_address",
-        description: "The address of the token to transfer.",
-        type: 3,
-        required: true,
-      },
-      {
-        name: "quantity",
-        description: "The amount of tokens to transfer.",
-        type: 10,
-        required: true,
-      },
-      {
-        name: "recipient",
-        description: "The recipient address.",
-        type: 3,
-        required: true,
-      },
-    ],
-  },
-  {
     name: "swap",
     description: "Swap Tokens",
     options: [
