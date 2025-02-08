@@ -13,6 +13,7 @@ import { connection } from "./data";
 import { LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
 import { transferSOl } from "./solana/transfer";
 import { privy, privysign } from "./privy";
+import { getTokenDecimals, swap } from "./solana/swap";
 
 const prisma = new PrismaClient();
 
@@ -143,6 +144,21 @@ client.on("interactionCreate", async (interaction: Interaction) => {
         const input_mint = options.data[0].value;
         const output_mint = options.data[1].value;
         const quantity = options.data[2].value;
+        const decimals = await getTokenDecimals(
+          new PublicKey(input_mint as string),
+        );
+
+        const tx = await swap(
+          new PublicKey(wallet.solAddress),
+          input_mint as string,
+          output_mint as string,
+          Number(quantity) * Math.pow(10, decimals),
+        );
+
+        const sign = await privysign(wallet.privyId, tx);
+        await interaction.editReply({
+          content: `https://solscan.io/tx/${sign}`,
+        });
     }
   } catch (e) {
     console.error(e);

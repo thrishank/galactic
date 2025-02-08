@@ -109,3 +109,25 @@ export const fetchTokenAccountData = async (address: PublicKey) => {
   });
   return tokenAccountData;
 };
+
+export async function getTokenDecimals(mintAddress: PublicKey) {
+  try {
+    const mintPublicKey = new PublicKey(mintAddress);
+
+    const mintInfo = await connection.getParsedAccountInfo(mintPublicKey);
+
+    if (!mintInfo.value || !mintInfo.value.data) {
+      throw new Error("Invalid mint account");
+    }
+
+    // @ts-ignore
+    const decimals = mintInfo.value.data.parsed.info.decimals;
+
+    return decimals;
+  } catch (error) {
+    console.error("Error getting token decimals:", error);
+    throw error;
+  }
+}
+
+getTokenDecimals(new PublicKey("DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263"));
