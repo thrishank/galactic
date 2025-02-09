@@ -1,7 +1,7 @@
 export const commands = [
   {
     name: "login",
-    description: "Initiate Google OAuth and authenticate.",
+    description: "create a solana wallet",
   },
   {
     name: "wallet",
