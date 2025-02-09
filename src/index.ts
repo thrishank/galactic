@@ -153,9 +153,12 @@ client.on("interactionCreate", async (interaction: Interaction) => {
           Number(quantity) * Math.pow(10, decimals),
         );
 
-        const sign = await privysign(wallet.privyId, tx);
+        const sign = tx.map(async (i: any) => {
+          return await privysign(wallet.privyId, i);
+        });
+
         await interaction.editReply({
-          content: `https://solscan.io/tx/${sign}`,
+          content: `https://solscan.io/tx/${sign[0]}`,
         });
     }
   } catch (e) {
